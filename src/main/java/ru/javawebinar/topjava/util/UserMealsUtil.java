@@ -1,6 +1,5 @@
 package ru.javawebinar.topjava.util;
 
-import com.sun.xml.internal.ws.api.model.wsdl.WSDLOutput;
 import ru.javawebinar.topjava.model.UserMeal;
 import ru.javawebinar.topjava.model.UserMealWithExcess;
 
@@ -23,45 +22,38 @@ public class UserMealsUtil {
                 new UserMeal(LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 410)
         );
 
-        List<UserMealWithExcess> mealsTo = filteredByCycles(meals, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
+        List<UserMealWithExcess> mealsTo = filteredByStreams(meals, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
         mealsTo.forEach(System.out::println);
-
     }
 
     public static List<UserMealWithExcess> filteredByCycles(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
-        //посчитаем количество набранных калорий по датам
         Map<LocalDate, Integer> sumCaloriesPerDate = new HashMap<>();
         for (UserMeal meal : meals) {
             LocalDate currentDate = meal.getDateTime().toLocalDate();
             sumCaloriesPerDate.put(currentDate, sumCaloriesPerDate.getOrDefault(currentDate, 0) + meal.getCalories());
         }
 
-        List<UserMealWithExcess> excessMeals = new LinkedList<>();
+        List<UserMealWithExcess> excessMeals = new ArrayList<>();
         for (UserMeal meal : meals) {
-            //проверка: попадает ли еда в заданный интервал
             if (TimeUtil.isBetweenHalfOpen(meal.getDateTime().toLocalTime(), startTime, endTime)) {
-                //Заполняем итоговый список
-                excessMeals.add(new UserMealWithExcess(meal, sumCaloriesPerDate.get(meal.getDateTime().toLocalDate()) > caloriesPerDay));
+                excessMeals.add(convertUserMeals(meal, sumCaloriesPerDate.get(meal.getDateTime().toLocalDate()) > caloriesPerDay));
             }
         }
         return excessMeals;
     }
 
     public static List<UserMealWithExcess> filteredByStreams(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
-        //посчитаем количество калорий в день
-        Map<LocalDate, Integer> sumCaloriesPerDate = meals.stream()
-                .collect(Collectors.toMap(x -> x.getDateTime().toLocalDate(), UserMeal::getCalories, Integer::sum));
-        //выберем даты, в которые было превышение калорий
-        List<LocalDate> excessDates = sumCaloriesPerDate.entrySet().stream()
-                .filter(e -> e.getValue() > caloriesPerDay)
-                .map(Map.Entry::getKey)
+        return meals.stream().collect(Collectors.groupingBy(m -> m.getDateTime().toLocalDate()))
+                .entrySet().stream().collect(Collectors
+                        .toMap(e -> e.getValue().stream().map(UserMeal::getCalories).reduce(0, Integer::sum),
+                                e -> e.getValue().stream().filter(m -> TimeUtil.isBetweenHalfOpen(m.getDateTime().toLocalTime(), startTime, endTime))
+                                        .collect(Collectors.toList())))
+                .entrySet().stream().flatMap(e -> e.getValue().stream().map(m -> convertUserMeals(m, e.getKey() > caloriesPerDay)))
                 .collect(Collectors.toList());
-        //Итоговый список
-        List<UserMealWithExcess> excessMeals = meals.stream()
-                .filter(x -> TimeUtil.isBetweenHalfOpen(x.getDateTime().toLocalTime(), startTime, endTime))
-                .map(x -> new UserMealWithExcess(x, excessDates.contains(x.getDateTime().toLocalDate())))
-                .collect(Collectors.toList());
+    }
 
-        return excessMeals;
+    private static UserMealWithExcess convertUserMeals(UserMeal um, boolean excess) {
+        return new UserMealWithExcess(um.getDateTime(), um.getDescription(), um.getCalories(), excess);
     }
 }
+
