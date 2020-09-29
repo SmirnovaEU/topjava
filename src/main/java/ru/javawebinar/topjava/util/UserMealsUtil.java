@@ -46,9 +46,9 @@ public class UserMealsUtil {
         return meals.stream().collect(Collectors.groupingBy(m -> m.getDateTime().toLocalDate()))
                 .entrySet().stream().collect(Collectors
                         .toMap(e -> e.getValue().stream().map(UserMeal::getCalories).reduce(0, Integer::sum),
-                                e -> e.getValue().stream().filter(m -> TimeUtil.isBetweenHalfOpen(m.getDateTime().toLocalTime(), startTime, endTime))
-                                        .collect(Collectors.toList())))
-                .entrySet().stream().flatMap(e -> e.getValue().stream().map(m -> convertUserMeals(m, e.getKey() > caloriesPerDay)))
+                                e -> e.getValue().stream().filter(um -> TimeUtil.isBetweenHalfOpen(um.getDateTime().toLocalTime(), startTime, endTime)).collect(Collectors.toList()),
+                                (list1, list2) -> {list1.addAll(list2); return list1;}))
+                .entrySet().stream().flatMap(e -> e.getValue().stream().map(um -> convertUserMeals(um, e.getKey() > caloriesPerDay)))
                 .collect(Collectors.toList());
     }
 
