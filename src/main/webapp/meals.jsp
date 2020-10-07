@@ -48,7 +48,7 @@
                 <fmt:parseDate value="${meal.dateTime}"
                                pattern="yyyy-MM-dd'T'HH:mm"
                                var="parsedDateTime"/>
-                <fmt:formatDate value="${parsedDateTime}" pattern="dd.MM.yyyy HH:mm" />
+                <fmt:formatDate value="${parsedDateTime}" pattern="yyyy.MM.dd HH:mm" />
             </td>
 
             <td><c:out value="${meal.description}"/></td>
