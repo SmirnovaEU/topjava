@@ -28,7 +28,7 @@
 <h3><a href="index.html">Home</a></h3>
 <hr>
 <h2>Meals</h2>
-
+<li><a href="meals?action=create">Add meal</a></li>
 <table>
     <thead>
     <tr>
@@ -41,7 +41,8 @@
     </thead>
     <tbody>
 
-    <jsp:useBean id="mealsTo" scope="request" type="java.util.List"/>
+
+    <jsp:useBean id="mealsTo" scope="page" type="ru.javawebinar.topjava.model.MealTo"/>
     <c:forEach items="${mealsTo}" var="meal">
         <tr style="color: ${meal.excess ? "forestgreen" : "darkred"} ">
             <td>
@@ -53,8 +54,8 @@
 
             <td><c:out value="${meal.description}"/></td>
             <td><c:out value="${meal.calories}"/></td>
-            <td></td>
-            <td></td>
+            <td><a href="meals?action=update&id=${meal.id}">Update</a></td>
+            <td><a href="meals?action=delete&id=${meal.id}">Delete</a></td>
         </tr>
     </c:forEach>
 
