@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.util.DateTimeUtil;
@@ -33,9 +32,9 @@ public class MealRestController {
     }
 
     public List<MealTo> getFiltered(LocalDateTime startDT, LocalDateTime endDT) {
-       return MealsUtil.getTos(service.getAll(authUserId()).stream().
-               filter(meal -> DateTimeUtil.isBetweenHalfOpen(meal.getDateTime(), startDT, endDT)).
-               collect(Collectors.toList()), authUserCaloriesPerDay());
+        return MealsUtil.getTos(service.getAll(authUserId()).stream().
+                filter(meal -> DateTimeUtil.isBetweenHalfOpen(meal.getDateTime(), startDT, endDT)).
+                collect(Collectors.toList()), authUserCaloriesPerDay());
     }
 
     public Meal get(int id) {
