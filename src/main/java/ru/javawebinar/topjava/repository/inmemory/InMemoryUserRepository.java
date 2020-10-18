@@ -20,6 +20,9 @@ public class InMemoryUserRepository implements UserRepository {
     private final Map<Integer, User> repository = new ConcurrentHashMap<>();
     private final AtomicInteger counter = new AtomicInteger(0);
 
+    public static final int USER_ID = 1;
+    public static final int ADMIN_ID = 2;
+
     @Override
     public boolean delete(int id) {
         log.info("delete {}", id);
@@ -46,15 +49,17 @@ public class InMemoryUserRepository implements UserRepository {
     @Override
     public List<User> getAll() {
         log.info("getAll");
-        Comparator<User> comparator = Comparator.comparing(AbstractNamedEntity::getName);
-        comparator = comparator.thenComparing(User::getEmail);
-        return repository.values().stream().sorted(comparator).collect(Collectors.toList());
+        return repository.values().stream().sorted(Comparator.comparing(User::getName).thenComparing(User::getEmail))
+                .collect(Collectors.toList());
     }
 
     @Override
     public User getByEmail(String email) {
         log.info("getByEmail {}", email);
-        return repository.values().stream().filter(user -> user.getEmail().equals(email)).findFirst().get();
+        return repository.values().stream()
+                .filter(user -> user.getEmail().equals(email))
+                .findFirst()
+                .orElse(null);
     }
 }
 
