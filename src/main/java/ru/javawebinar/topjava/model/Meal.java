@@ -22,7 +22,7 @@ public class Meal extends AbstractBaseEntity {
         this.calories = calories;
     }
 
-    public Meal(){
+    public Meal() {
 
     }
 
