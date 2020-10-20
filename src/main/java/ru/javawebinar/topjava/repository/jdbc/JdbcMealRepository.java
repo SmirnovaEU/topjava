@@ -19,10 +19,8 @@ import java.util.List;
 public class JdbcMealRepository implements MealRepository {
     private static final BeanPropertyRowMapper<Meal> ROW_MAPPER = BeanPropertyRowMapper.newInstance(Meal.class);
 
-    @Autowired
     private final JdbcTemplate jdbcTemplate;
 
-    @Autowired
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     private final SimpleJdbcInsert insertMeal;
