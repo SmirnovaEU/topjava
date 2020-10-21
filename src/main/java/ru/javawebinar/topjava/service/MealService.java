@@ -44,8 +44,4 @@ public class MealService {
     public Meal create(Meal meal, int userId) {
         return repository.save(meal, userId);
     }
-
-    public List<Meal> getBetweenHalfOpen(@Nullable LocalDate startDate, @Nullable LocalDate endDate, int userId) {
-        return repository.getBetweenHalfOpen(atStartOfDayOrMin(startDate), atStartOfNextDayOrMax(endDate), userId);
-    }
 }
