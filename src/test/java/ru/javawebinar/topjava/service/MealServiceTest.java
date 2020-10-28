@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.service;
 
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
-import javax.persistence.NoResultException;
 import java.time.LocalDate;
 import java.time.Month;
 
@@ -30,6 +30,9 @@ public class MealServiceTest {
 
     @Autowired
     private MealService service;
+
+    @Rule
+    public TestLogger testLogger = new TestLogger();
 
     @Test
     public void delete() throws Exception {
