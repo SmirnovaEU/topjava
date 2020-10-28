@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.service;
 
+import org.junit.AfterClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -112,4 +113,11 @@ public class MealServiceTest {
     public void getBetweenWithNullDates() throws Exception {
         MEAL_MATCHER.assertMatch(service.getBetweenInclusive(null, null, USER_ID), meals);
     }
+
+    @AfterClass
+    public static void totalLog() {
+        TestLogger logger = new TestLogger();
+        logger.writeTotalLog();
+    }
+
 }
