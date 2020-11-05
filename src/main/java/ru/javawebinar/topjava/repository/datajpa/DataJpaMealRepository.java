@@ -8,10 +8,9 @@ import ru.javawebinar.topjava.repository.MealRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
-@Transactional(readOnly = true)
+@Transactional
 public class DataJpaMealRepository implements MealRepository {
 
     private final static Sort SORT_EMAIL = Sort.by(Sort.Direction.DESC, "email");
@@ -36,8 +35,6 @@ public class DataJpaMealRepository implements MealRepository {
 
     @Override
     public Meal get(int id, int userId) {
-//        Meal meal = crudRepository.findById(id).orElse(null);
-//        return meal != null && meal.getUser().getId() == userId ? meal : null;
         return crudRepository.findById(id).filter(m -> m.getUser().getId() == userId).orElse(null);
     }
 
