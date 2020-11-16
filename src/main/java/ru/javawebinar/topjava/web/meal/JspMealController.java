@@ -31,20 +31,7 @@ public class JspMealController {
     @Autowired
     private MealRestController mealController;
 
-//    @GetMapping("/")
-//    public String root() {
-//        return "index";
-//    }
-//
-//    @GetMapping("/users")
-//    public String getUsers(Model model) {
-//        model.addAttribute("users", service.getAll());
-//        return "users";
-//    }
-//
-
-
-    @PostMapping("/meals")
+    @PostMapping("/")
     protected String doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         Meal meal = new Meal(
@@ -61,7 +48,7 @@ public class JspMealController {
         return "redirect:meals";
     }
 
-    @GetMapping("/meals")
+    @GetMapping("/delete")
     protected String doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int id = getId(request);
         mealController.delete(id);
@@ -69,32 +56,35 @@ public class JspMealController {
         return "redirect:meals";
     }
 
-    @GetMapping("/meals")
-    protected void doCreate(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    @GetMapping("/create")
+    protected String doCreate(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
 
         final Meal meal = "create".equals(action) ?
                 new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000) :
                 mealController.get(getId(request));
         request.setAttribute("meal", meal);
-        request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
+        //request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
+        return "meals";
 
     }
 
-    @GetMapping("/meals")
-    protected void doFilter(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    @GetMapping("/filter")
+    protected String doFilter(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         LocalDate startDate = parseLocalDate(request.getParameter("startDate"));
         LocalDate endDate = parseLocalDate(request.getParameter("endDate"));
         LocalTime startTime = parseLocalTime(request.getParameter("startTime"));
         LocalTime endTime = parseLocalTime(request.getParameter("endTime"));
         request.setAttribute("meals", mealController.getBetween(startDate, startTime, endDate, endTime));
-        request.getRequestDispatcher("/meals.jsp").forward(request, response);
+        //request.getRequestDispatcher("/meals.jsp").forward(request, response);
+        return "meals";
     }
 
-    @GetMapping("/meals")
-    protected void doGetAll(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    @GetMapping("/")
+    protected String doGetAll(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setAttribute("meals", mealController.getAll());
-        request.getRequestDispatcher("/meals.jsp").forward(request, response);
+        //request.getRequestDispatcher("/meals.jsp").forward(request, response);
+        return "meals";
     }
 
     private int getId(HttpServletRequest request) {
