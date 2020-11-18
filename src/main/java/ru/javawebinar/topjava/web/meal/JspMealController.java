@@ -4,6 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 
@@ -21,13 +22,14 @@ import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalDate;
 import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalTime;
 
 @Controller
+@RequestMapping(value = "meals")
 public class JspMealController extends AbstractMealController {
 
     public JspMealController(MealService service) {
         super(service);
     }
 
-    @PostMapping("meals")
+    @PostMapping
     protected String doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         Meal meal = new Meal(
@@ -43,14 +45,14 @@ public class JspMealController extends AbstractMealController {
         return "redirect:/meals";
     }
 
-    @GetMapping("meals/delete")
+    @GetMapping("/delete")
     protected String doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int id = getId(request);
         super.delete(id);
         return "redirect:/meals";
     }
 
-    @GetMapping("meals/create")
+    @GetMapping("/create")
     protected String doCreate(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
 
@@ -59,7 +61,7 @@ public class JspMealController extends AbstractMealController {
         return "mealForm";
     }
 
-    @GetMapping("meals/update")
+    @GetMapping("/update")
     protected String doUpdate(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
 
@@ -68,7 +70,7 @@ public class JspMealController extends AbstractMealController {
         return "mealForm";
     }
 
-    @GetMapping("meals/filter")
+    @GetMapping("/filter")
     protected String doFilter(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         LocalDate startDate = parseLocalDate(request.getParameter("startDate"));
         LocalDate endDate = parseLocalDate(request.getParameter("endDate"));
@@ -78,7 +80,7 @@ public class JspMealController extends AbstractMealController {
         return "meals";
     }
 
-    @GetMapping("meals")
+    @GetMapping
     protected String doGetAll(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setAttribute("meals", super.getAll());
         return "meals";

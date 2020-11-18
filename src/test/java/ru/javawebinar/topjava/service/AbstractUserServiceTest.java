@@ -10,6 +10,7 @@ import org.springframework.dao.DataAccessException;
 import ru.javawebinar.topjava.UserTestData;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
+import ru.javawebinar.topjava.repository.JpaUtil;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import javax.validation.ConstraintViolationException;
@@ -17,7 +18,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import ru.javawebinar.topjava.repository.JpaUtil;
 
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.UserTestData.*;
@@ -38,11 +38,15 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
 
     @Before
     public void setUp() {
-        String[] profiles = environment.getActiveProfiles();
-        Assume.assumeTrue(!Arrays.stream(profiles).anyMatch(p -> p.equals("jdbc")));
         cacheManager.getCache("users").clear();
-        jpaUtil.clear2ndLevelHibernateCache();
+        try {
+            jpaUtil.clear2ndLevelHibernateCache();
+        } catch (Exception exception) {
+            String[] profiles = environment.getActiveProfiles();
+            Assume.assumeNoException(exception);
+        }
     }
+
 
     @Test
     public void create() {
@@ -103,6 +107,8 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
 
     @Test
     public void createWithException() {
+        String[] profiles = environment.getActiveProfiles();
+        Assume.assumeTrue(!Arrays.stream(profiles).anyMatch(p -> p.equals("jdbc")));
         validateRootCause(() -> service.create(new User(null, "  ", "mail@yandex.ru", "password", Role.USER)), ConstraintViolationException.class);
         validateRootCause(() -> service.create(new User(null, "User", "  ", "password", Role.USER)), ConstraintViolationException.class);
         validateRootCause(() -> service.create(new User(null, "User", "mail@yandex.ru", "  ", Role.USER)), ConstraintViolationException.class);
