@@ -19,6 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.TestUtil.readFromJson;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
+import static ru.javawebinar.topjava.UserTestData.user;
 import static ru.javawebinar.topjava.util.MealsUtil.getTos;
 
 class MealRestControllerTest extends AbstractControllerTest {
@@ -51,7 +52,7 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(MEALTO_MATCHER.contentJson(getTos(meals, USER_ID)));
+                .andExpect(MEALTO_MATCHER.contentJson(getTos(meals, user.getCaloriesPerDay())));
         MEAL_MATCHER.assertMatch(mealService.getAll(USER_ID), meals);
 
     }
@@ -86,6 +87,6 @@ class MealRestControllerTest extends AbstractControllerTest {
         perform(MockMvcRequestBuilders.get(REST_URL + "filter?start=2020-01-30T00:00:00&end=2020-01-31T22:00:00"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MEALTO_MATCHER.contentJson(getTos(meals, USER_ID)));
+                .andExpect(MEALTO_MATCHER.contentJson(getTos(meals, user.getCaloriesPerDay())));
     }
 }
