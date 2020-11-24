@@ -1,5 +1,7 @@
 package ru.javawebinar.topjava.to;
 
+import ru.javawebinar.topjava.model.Meal;
+
 import java.time.LocalDateTime;
 
 public class MealTo {
@@ -21,6 +23,14 @@ public class MealTo {
         this.excess = excess;
     }
 
+    public MealTo() {
+        this.excess = false;
+        this.calories = 0;
+        this.description = "";
+        this.dateTime = null;
+        this.id = null;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -39,6 +49,10 @@ public class MealTo {
 
     public boolean isExcess() {
         return excess;
+    }
+
+    public Meal getMeal() {
+        return new Meal(this.id, this.dateTime, this.description, this.calories);
     }
 
     @Override
