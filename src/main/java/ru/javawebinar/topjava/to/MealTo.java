@@ -51,8 +51,21 @@ public class MealTo {
         return excess;
     }
 
-    public Meal getMeal() {
-        return new Meal(this.id, this.dateTime, this.description, this.calories);
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj.getClass().equals(this.getClass())) {
+            return this.dateTime.equals(((MealTo) obj).dateTime) &&
+                    this.description.equals(((MealTo) obj).description) &&
+                    this.calories == ((MealTo) obj).calories &&
+                    this.excess == ((MealTo) obj).excess;
+
+        } else
+            return super.equals(obj);
     }
 
     @Override
