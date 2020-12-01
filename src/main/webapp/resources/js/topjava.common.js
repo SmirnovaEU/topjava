@@ -4,7 +4,7 @@ function makeEditable() {
     form = $('#detailsForm');
     $(".delete").click(function () {
         if (confirm('Are you sure?')) {
-            deleteRow($(this).parent("tr").attr("id"));
+            deleteRow($(this).parents("tr").attr("id"));
         }
     });
 
