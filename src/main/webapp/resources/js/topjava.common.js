@@ -31,12 +31,6 @@ function deleteRow(id) {
     });
 }
 
-function updateTable() {
-    $.get(ctx.ajaxUrl, function (data) {
-        ctx.datatableApi.clear().rows.add(data).draw();
-    });
-}
-
 function save() {
     $.ajax({
         type: "POST",
