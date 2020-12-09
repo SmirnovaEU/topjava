@@ -3,14 +3,14 @@ var ctx, mealAjaxUrl = "profile/meals/";
 function updateFilteredTable() {
     $.ajax({
         type: "GET",
-        url: "profile/meals/filter",
+        url: mealAjaxUrl + "filter",
         data: $("#filter").serialize()
     }).done(updateTableByData);
 }
 
 function clearFilter() {
     $("#filter")[0].reset();
-    $.get("profile/meals/", updateTableByData);
+    $.get(mealAjaxUrl, updateTableByData);
 }
 
 $(function () {
@@ -26,11 +26,11 @@ $(function () {
             "columns": [
                 {
                     "data": "dateTime",
-                    "render": function (date, type, row) {
+                    "render": function (data, type, row) {
                         if (type === "display") {
-                            return date.substring(0, 10);
+                            return data.substring(0, 10) + " " + data.substring(11, 20);
                         }
-                        return date;
+                        return data;
                     }
                 },
                 {
@@ -55,7 +55,10 @@ $(function () {
                     0,
                     "desc"
                 ]
-            ]
+            ],
+            "createdRow": function (row, data, dataIndex) {
+                $(row).attr("data-mealExcess", data.excess);
+            }
         }),
         updateTable: updateFilteredTable
     };

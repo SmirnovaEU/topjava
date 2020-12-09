@@ -1,6 +1,8 @@
 package ru.javawebinar.topjava.to;
 
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.*;
 import java.beans.ConstructorProperties;
@@ -10,21 +12,22 @@ import java.util.Objects;
 public class MealTo extends BaseTo {
 
     @NotNull
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private final LocalDateTime dateTime;
 
     @NotBlank
-    @Size(min = 3, max = 300)
+    @Size(min = 2, max = 120)
     private final String description;
 
-    //    @Positive(message = "Calories should be more than 0")
     @NotNull
-    private final int calories;
+    @Min(value = 10, message = "Calories should not be less than 10")
+    @Max(value = 5000, message = "Calories should not be greater than 5000")
+    private final Integer calories;
 
-    @NotNull
-    private final boolean excess;
+    private final Boolean excess;
 
     @ConstructorProperties({"id", "dateTime", "description", "calories", "excess"})
-    public MealTo(Integer id, @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateTime, String description, Integer calories, Boolean excess) {
+    public MealTo(Integer id, @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateTime, String description, @Nullable Integer calories, Boolean excess) {
         super(id);
         this.dateTime = dateTime;
         this.description = description;
