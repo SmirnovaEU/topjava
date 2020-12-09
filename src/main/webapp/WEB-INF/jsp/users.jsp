@@ -78,6 +78,10 @@
 </div>
 <jsp:include page="fragments/footer.jsp"/>
 </body>
+<%--<jsp:include page="fragments/local.jsp">--%>
+<%--    <jsp:param name="addName" value="meal.add" />--%>
+<%--    <jsp:param name="editName" value="meal.edit" />--%>
+<%--</jsp:include>--%>
 <script type="text/javascript">
     const i18n = [];
     i18n["addTitle"] = '<spring:message code="user.add"/>';

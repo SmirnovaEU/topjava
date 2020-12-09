@@ -1,21 +1,30 @@
 package ru.javawebinar.topjava.to;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
+import javax.validation.constraints.*;
 import java.beans.ConstructorProperties;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class MealTo extends BaseTo {
 
+    @NotNull
     private final LocalDateTime dateTime;
 
+    @NotBlank
+    @Size(min = 3, max = 300)
     private final String description;
 
+    //    @Positive(message = "Calories should be more than 0")
+    @NotNull
     private final int calories;
 
+    @NotNull
     private final boolean excess;
 
     @ConstructorProperties({"id", "dateTime", "description", "calories", "excess"})
-    public MealTo(Integer id, LocalDateTime dateTime, String description, int calories, boolean excess) {
+    public MealTo(Integer id, @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateTime, String description, Integer calories, Boolean excess) {
         super(id);
         this.dateTime = dateTime;
         this.description = description;
@@ -54,6 +63,10 @@ public class MealTo extends BaseTo {
     @Override
     public int hashCode() {
         return Objects.hash(id, dateTime, description, calories, excess);
+    }
+
+    public boolean isNew() {
+        return id == null;
     }
 
     @Override
