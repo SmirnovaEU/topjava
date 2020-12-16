@@ -95,10 +95,17 @@ function successNoty(key) {
 
 function failNoty(jqXHR) {
     closeNoty();
-    var errorInfo = jqXHR.responseJSON;
+    var errorInfo = $.parseJSON(jqXHR.responseText);
+    var detail = errorInfo.detail;
+    if (detail.includes("users_unique_email_idx")) {
+        detail = i18n["user.double"];
+    } else if (detail.includes("meals_unique_user_datetime_idx")) {
+        detail = i18n["meal.double"];
+    }
     failedNote = new Noty({
         text: "<span class='fa fa-lg fa-exclamation-circle'></span> &nbsp;" + i18n["common.errorStatus"] + ": " + jqXHR.status +
-            "<br>" + errorInfo.type + "<br>" + errorInfo.detail,
+        "<br>" + errorInfo.type +
+            "<br>" + detail,
         type: "error",
         layout: "bottomRight"
     }).show();

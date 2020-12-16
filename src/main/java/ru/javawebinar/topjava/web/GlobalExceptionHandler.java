@@ -20,10 +20,11 @@ public class GlobalExceptionHandler {
     public ModelAndView defaultErrorHandler(HttpServletRequest req, Exception e) throws Exception {
         log.error("Exception at request " + req.getRequestURL(), e);
         Throwable rootCause = ValidationUtil.getRootCause(e);
+        String rootCauseStr = rootCauseToString(rootCause);
 
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         ModelAndView mav = new ModelAndView("exception",
-                Map.of("exception", rootCause, "message", rootCause.toString(), "status", httpStatus));
+                Map.of("exception", rootCause, "message", rootCauseStr, "status", httpStatus));
         mav.setStatus(httpStatus);
 
         // Interceptor is not invoked, put userTo
@@ -32,5 +33,13 @@ public class GlobalExceptionHandler {
             mav.addObject("userTo", authorizedUser.getUserTo());
         }
         return mav;
+    }
+
+    private String rootCauseToString(Throwable rootCause) {
+        String rootCauseStr = rootCause.toString();
+        if (rootCauseStr.contains("users_unique_email_idx")) {
+            rootCauseStr = "Пользователь с таким email уже существует";
+        }
+        return rootCauseStr;
     }
 }
